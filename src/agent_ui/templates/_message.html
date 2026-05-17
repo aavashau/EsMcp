@@ -1,0 +1,18 @@
+<div class="msg-user">{{ user_message }}</div>
+<div class="msg-assistant">
+  <div>{{ assistant_text }}</div>
+  {% if tool_calls %}
+  <details class="tool-calls">
+    <summary>{{ tool_calls | length }} tool call(s) — click to inspect</summary>
+    {% for call in tool_calls %}
+    <div class="tool-call-block">
+      <strong>{{ call.name }}</strong>
+      <pre class="tool-result">args: {{ call.args | tojson(indent=2) }}
+
+result:
+{{ call.result }}</pre>
+    </div>
+    {% endfor %}
+  </details>
+  {% endif %}
+</div>

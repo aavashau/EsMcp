@@ -16,6 +16,8 @@ dist/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.coverage
+htmlcov/
 
 # uv
 .uv-cache/
@@ -23,7 +25,10 @@ dist/
 # Project artifacts
 audit/
 data/
+tmp/
 *.log
+*.sqlite
+*.db
 
 # Node (in case any tooling lands here later)
 node_modules/
@@ -34,3 +39,7 @@ node_modules/
 .vscode/
 *.swp
 *.swo
+
+# Claude Code — plans/ is intentionally tracked; memory/ and local settings are not
+.claude/settings.local.json
+.claude/memory/

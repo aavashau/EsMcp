@@ -1,0 +1,37 @@
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "es-mcp-test"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "mcp[cli]>=1.2,<2",
+    "elasticsearch>=8.13,<9",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "jinja2>=3.1",
+    "python-multipart",
+    "anthropic>=0.39",
+    "presidio-analyzer>=2.2",
+    "presidio-anonymizer>=2.2",
+    "spacy>=3.7",
+    "faker>=25",
+    "python-dotenv>=1.0",
+    "pydantic-settings>=2.4",
+]
+
+[project.scripts]
+mcp-server = "mcp_server.server:main"
+agent-ui = "agent_ui.main:main"
+seed-es = "seed.load:main"
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "src/mcp_phi",
+    "src/mcp_server",
+    "src/seed",
+    "src/agent_ui",
+]

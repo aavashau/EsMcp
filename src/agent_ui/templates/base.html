@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Healthcare Agent</title>
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f3f4f6; height: 100vh; display: flex; flex-direction: column; }
+    header {
+      background: #1e3a5f; color: #fff; padding: 0.9rem 1.2rem;
+      font-size: 1rem; font-weight: 600; letter-spacing: .02em;
+    }
+    header span { font-weight: 300; font-size: 0.8rem; margin-left: 0.75rem; opacity: 0.8; }
+    #chatlog {
+      flex: 1; overflow-y: auto; padding: 1rem 1.25rem;
+      display: flex; flex-direction: column; gap: 0.8rem;
+    }
+    .msg-user {
+      background: #dbeafe; border-radius: 14px 14px 2px 14px;
+      padding: 0.65rem 1rem; max-width: 72%; align-self: flex-end;
+      font-size: 0.95rem;
+    }
+    .msg-assistant {
+      background: #fff; border: 1px solid #e5e7eb;
+      border-radius: 14px 14px 14px 2px;
+      padding: 0.75rem 1rem; max-width: 88%; align-self: flex-start;
+      font-size: 0.95rem; line-height: 1.5;
+    }
+    details.tool-calls { margin-top: 0.6rem; font-size: 0.78rem; color: #6b7280; }
+    details.tool-calls summary { cursor: pointer; user-select: none; }
+    .tool-call-block { margin-top: 0.4rem; background: #f9fafb; border-radius: 6px; padding: 0.4rem 0.6rem; }
+    .tool-call-block strong { color: #374151; }
+    pre.tool-result { margin-top: 0.25rem; white-space: pre-wrap; word-break: break-word; font-size: 0.75rem; }
+    form {
+      display: flex; gap: 0.5rem; padding: 0.9rem 1.2rem;
+      background: #fff; border-top: 1px solid #e5e7eb;
+    }
+    input[name=message] {
+      flex: 1; padding: 0.6rem 0.9rem; border: 1px solid #d1d5db;
+      border-radius: 8px; font-size: 0.95rem; outline: none;
+    }
+    input[name=message]:focus { border-color: #1e3a5f; }
+    button {
+      padding: 0.6rem 1.2rem; background: #1e3a5f; color: #fff;
+      border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem;
+    }
+    button:hover { background: #162e4d; }
+    .htmx-request button { opacity: 0.6; cursor: wait; }
+  </style>
+</head>
+<body>
+  <header>
+    zHealth Agent
+    <span>PHI redacted at MCP boundary — model never sees raw patient data</span>
+  </header>
+  <div id="chatlog"></div>
+  <form
+    hx-post="/chat"
+    hx-target="#chatlog"
+    hx-swap="beforeend"
+    hx-on::after-request="this.querySelector('input[name=message]').value=''"
+  >
+    <input type="hidden" name="session_id" value="{{ session_id }}">
+    <input type="text" name="message" placeholder="Ask about members or claims…" autofocus autocomplete="off">
+    <button type="submit">Send</button>
+  </form>
+  <script>
+    // Auto-scroll chatlog after each HTMX swap
+    document.body.addEventListener("htmx:afterSwap", () => {
+      const log = document.getElementById("chatlog");
+      log.scrollTop = log.scrollHeight;
+    });
+  </script>
+</body>
+</html>
