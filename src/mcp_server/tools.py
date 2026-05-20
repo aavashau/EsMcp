@@ -279,7 +279,7 @@ def register_tools(mcp) -> None:
         min_age: Optional[int] = None,
         max_age: Optional[int] = None,
         insurance_id: Optional[str] = None,
-        limit: int = 10,
+        limit: int = 500,
     ) -> list[dict]:
         """Find patients by demographic criteria. All results are de-identified.
         state: 2-letter state code (e.g. 'CA'). city: city name.
