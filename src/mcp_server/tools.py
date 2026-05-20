@@ -378,7 +378,7 @@ def register_tools(mcp) -> None:
     @mcp.tool()
     def aggregate_diagnoses(
         filter_code_prefix: Optional[str] = None,
-        size: int = 20,
+        size: int = 200000,
     ) -> list[dict]:
         """Top diagnosis codes ranked by encounter frequency. Returns counts only — no PHI.
         filter_code_prefix: narrow to a specific ICD chapter/block (e.g. 'E11' for diabetes)."""
@@ -501,7 +501,7 @@ def register_tools(mcp) -> None:
             index=settings.es_index,
             query={"term": {"_docType": ELIG}},
             size=0,
-            aggs={"by_location": {"terms": {"field": field, "size": 60}}},
+            aggs={"by_location": {"terms": {"field": field, "size": 200000}}},
         )
         buckets = resp.get("aggregations", {}).get("by_location", {}).get("buckets", [])
         write_event(
@@ -514,7 +514,7 @@ def register_tools(mcp) -> None:
         return [{"location": b["key"], "patient_count": b["doc_count"]} for b in buckets]
 
     @mcp.tool()
-    def aggregate_encounters_by_provider(size: int = 10) -> list[dict]:
+    def aggregate_encounters_by_provider(size: int = 200000) -> list[dict]:
         """Encounter count grouped by provider name. Returns counts only — no PHI."""
         start = time.time()
         es = get_client()
@@ -540,7 +540,7 @@ def register_tools(mcp) -> None:
         city: Optional[str] = None,
         min_age: Optional[int] = None,
         max_age: Optional[int] = None,
-        size: int = 20,
+        size: int = 200000,
     ) -> list[dict]:
         """Top diagnoses for a filtered patient cohort (by location and/or age).
         Returns counts only — no PHI. Provide at least one filter."""
@@ -596,7 +596,7 @@ def register_tools(mcp) -> None:
         return [{"code": b["key"], "encounter_count": b["doc_count"]} for b in buckets]
 
     @mcp.tool()
-    def aggregate_encounters_per_patient(size: int = 10) -> list[dict]:
+    def aggregate_encounters_per_patient(size: int = 200000) -> list[dict]:
         """Encounter count per patient, ranked highest first. Returns patient_id and count — no PHI."""
         start = time.time()
         es = get_client()

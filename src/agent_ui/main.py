@@ -1,10 +1,11 @@
+import base64
 import logging
 import uuid
 from contextlib import AsyncExitStack, asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, Form, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from fastapi.templating import Jinja2Templates
 from mcp import ClientSession
 from mcp.client.stdio import stdio_client
@@ -35,6 +36,15 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Healthcare Agent", lifespan=lifespan)
+
+FAVICON_BYTES = base64.b64decode(
+    "AAABAAEAEBAAAAAAIABWAAAAFgAAAIlQTkcNChoKAAAADUlIRFIAAAAQAAAAEAgGAAAAH/P/YQAAAB1JREFUeJxjlLOK/89AAWCiRPOoAaMGjBowmAwAADMuAdbnd/XnAAAAAElFTkSuQmCC"
+)
+
+
+@app.get("/favicon.ico")
+async def favicon():
+    return Response(content=FAVICON_BYTES, media_type="image/x-icon")
 
 
 @app.get("/", response_class=HTMLResponse)
